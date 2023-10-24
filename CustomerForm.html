@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>survey-form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #516cbc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        label {
+            font-weight: bold;
+            color: rgb(133, 199, 67);
+            margin: 10px 20px 20px 0px;
+        }
+        
+        h2 {
+            font-weight: bold;
+            color: rgb(238, 225, 46);
+            text-align: center;
+        }
+        
+        span {
+            color: #f10d0d;
+            font-size: 20px;
+            font-family: Arial;
+            font-weight: lighter;
+        }
+        
+        strong {
+            color: #84e908;
+            font-size: 20px;
+            font-family: Arial;
+            font-weight: lighter;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 90%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        .gender-checkbox label {
+            display: block;
+        }
+        
+        .btn-container {
+            text-align: center;
+        }
+        
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .reset-btn {
+            background-color: #f44336;
+        }
+        
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .popup-content {
+            background-color: #fff;
+            width: 80%;
+            max-width: 400px;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .popup label {
+            font-weight: bold;
+        }
+        
+        p {
+            color: red;
+            font-size: 12px;
+        }
+        
+        b {
+            color: wheat;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Survey Form</h2>
+        <form id="survey-form" onsubmit="return validateForm()">
+            <label for="first-name">First Name: <span>*</span></label>
+            <input type="text" id="first-name" required autofocus>
+
+            <label for="last-name">Last Name: <span>*</span></label>
+            <input type="text" id="last-name" required>
+
+            <label for="dob">Date of Birth: <span>*</span></label>
+            <input type="date" id="dob" required>
+
+            <label for="country">Country: <span>*</span></label>
+            <select id="country" required>
+            <option value="india" selected>INDIA</option>
+            <option value="usa">USA</option>
+            <option value="canada">Canada</option>
+            <option value="uk">UK</option>
+        </select>
+
+            <div class="gender-checkbox">
+                <label>Gender: <span>*</span><p id="gen"></p></label>
+                <input type="checkbox" id="male" name="gender" value="male" onclick="chbx(this)"> <b>Male</b>
+                <input type="checkbox" id="female" name="gender" value="female" onclick="chbx(this)"><b>Female</b>
+                <input type="checkbox" id="other" name="gender" value="other" onclick="chbx(this)"> <b>Other</b>
+            </div>
+
+            <label for="profession">Profession: <span>*</span></label>
+            <input type="text" id="profession" required>
+
+            <label for="email">Email: <span>*</span></label>
+            <input type="email" id="email" required>
+
+            <label for="mobile">Mobile Number: <span>*</span></label>
+            <input type="number" id="mobile" required>
+
+            <div class="btn-container">
+                <button type="submit" class="btn">Submit</button>
+                <button type="reset" class="btn reset-btn" onclick="resetForm()">Reset</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <h2>Survey Form Submission</h2>
+            <p><strong>First Name:</strong> <span id="popup-first-name"></span></p>
+            <p><strong>Last Name:</strong> <span id="popup-last-name"></span></p>
+            <p><strong>Date of Birth:</strong> <span id="popup-dob"></span></p>
+            <p><strong>Country:</strong> <span id="popup-country"></span></p>
+            <p><strong>Gender:</strong> <span id="popup-gender"></span></p>
+            <p><strong>Profession:</strong> <span id="popup-profession"></span></p>
+            <p><strong>Email:</strong> <span id="popup-email"></span></p>
+            <p><strong>Mobile Number:</strong> <span id="popup-mobile"></span></p>
+            <button class="btn" onclick="closePopup()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function chbx(obj) {
+            var that = obj;
+            if (document.getElementById(that.id).checked == true) {
+                document.getElementById('male').checked = false;
+                document.getElementById('female').checked = false;
+                document.getElementById('other').checked = false;
+                document.getElementById(that.id).checked = true;
+                var label = document.getElementById('gen');
+                label.style.display = 'none';
+            }
+        }
+
+        function validateForm() {
+            if (document.querySelectorAll('[type="checkbox"]:checked').length < 1) {
+                var label = document.getElementById('gen');
+                label.style.display = 'block';
+                document.getElementById("gen").innerText = "Please Select Your Gender"
+                return false;
+            }
+            showPopup();
+            return false;
+        }
+
+        function showPopup() {
+            document.getElementById("popup-first-name").innerText = document.getElementById("first-name").value;
+            document.getElementById("popup-last-name").innerText = document.getElementById("last-name").value;
+            document.getElementById("popup-dob").innerText = document.getElementById("dob").value;
+            document.getElementById("popup-country").innerText = document.getElementById("country").value;
+
+            let gender = "";
+            const genderCheckboxes = document.querySelectorAll('input[name="gender"]:checked');
+            genderCheckboxes.forEach(checkbox => {
+                gender += checkbox.value + ", ";
+            });
+            gender = gender.slice(0, -2);
+            document.getElementById("popup-gender").innerText = gender;
+
+            document.getElementById("popup-profession").innerText = document.getElementById("profession").value;
+            document.getElementById("popup-email").innerText = document.getElementById("email").value;
+            document.getElementById("popup-mobile").innerText = document.getElementById("mobile").value;
+
+            document.getElementById("popup").style.display = "block";
+        }
+
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+            document.getElementById("survey-form").reset();
+        }
+
+        function resetForm() {
+            document.getElementById("survey-form").reset();
+        }
+    </script>
+</body>
+
+</html>
